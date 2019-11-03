@@ -1,10 +1,10 @@
 import React from 'react'
 
-class Game extends React.Component{
+class GamePage extends React.Component{
 
     render(){
         return <h1>Game</h1>
     }
 }
 
-export default Game;
+export default GamePage;
