@@ -1,3 +1,5 @@
+import '../../styles/sass/app-imports.scss'
+
 import React from 'react'
 import Routes from '../../routes/routes'
 
