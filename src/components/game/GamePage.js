@@ -1,9 +1,15 @@
 import React from 'react'
+import Game from './Game';
+import Container from 'react-bootstrap/Container';
 
-class GamePage extends React.Component{
+class GamePage extends React.Component {
 
-    render(){
-        return <h1>Game</h1>
+    render() {
+        return (
+            <Container fluid={true}>
+                <div><Game /></div>
+            </Container>
+        );
     }
 }
 
