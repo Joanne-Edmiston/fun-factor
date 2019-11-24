@@ -1,5 +1,11 @@
-.game-board{
-    border: 5px ridge #1C6EA4;
-    border-top:none;
-    border-radius: 0px 0px 5% 5%;
+.game-board {
+  border: 5px ridge #1c6ea4;
+  border-top: none;
+  border-radius: 0px 0px 5% 5%;
+  max-width: 350px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 20px;
+  min-width: 230px;
+  min-height: 440px;
 }
