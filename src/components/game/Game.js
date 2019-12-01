@@ -87,15 +87,18 @@ class Game extends React.Component {
         return (
             <div>
                 <div className="game-header">
-                    {this.state.started
-                        ? <h1>Score:<Badge variant="secondary">{this.state.score}</Badge></h1>
-                        : <ButtonToolbar>
-                            <Button onClick={this.startGame} size="lg" block>
-                                Begin a new Game
+                    <div className="game-header-content">
+
+                        {this.state.started
+                            ? <h1>Score:<Badge variant="secondary">{this.state.score}</Badge></h1>
+                            : <ButtonToolbar>
+                                <Button onClick={this.startGame} size="lg" block>
+                                    Begin a new Game
                             </Button>
-                        </ButtonToolbar>}
+                            </ButtonToolbar>}
+                    </div>
+                    <Board rows={this.state.rows} />
                 </div>
-                <Board rows={this.state.rows} />
             </div>
         )
     }

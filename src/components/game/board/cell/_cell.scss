@@ -1,16 +1,20 @@
-.game-cell-filled{
-    background-color: #0000cc;
-    border: none;
-    color: white;
-    padding: 5px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin: 1px 1px;
-    border-radius: 50%;
+.game-cell {
+  height: 34px;
 }
 
-.game-cell-empty{
-    visibility: hidden;
+.game-cell.game-cell-filled {
+  background-color: #0000cc;
+  border: none;
+  color: white;
+  padding: 5px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 1px 1px;
+  border-radius: 50%;
+}
+
+.game-cell.game-cell-empty {
+  visibility: hidden;
 }

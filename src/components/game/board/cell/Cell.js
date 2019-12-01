@@ -4,7 +4,7 @@ import './_cell.scss';
 function Cell(props){
     return(
     <button 
-        className={"game-cell-" + (props.value ? "filled" : "empty")}>
+        className={"game-cell game-cell-" + (props.value ? "filled" : "empty")}>
         {props.value}
     </button>);
 }
