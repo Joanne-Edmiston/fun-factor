@@ -14,15 +14,40 @@ class Game extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            rows: Array(this.maxRows).fill(Array(this.maxColumns).fill(null)),
+            rows: this.initialiseGrid(),
             started: false,
             score: 0,
+            gameOver: false,
         };
 
         this.iterateGame = this.iterateGame.bind(this);
         this.startGame = this.startGame.bind(this);
         this.stopGame = this.stopGame.bind(this);
+        this.initialiseGrid = this.initialiseGrid.bind(this);
+        this.cloneGrid = this.cloneGrid.bind(this);
         this.getNextStartingColumn = this.getNextStartingColumn.bind(this);
+    }
+
+    initialiseGrid() {
+        let rows = Array(this.maxRows);
+        for (let r = 0; r < this.maxRows; r++) {
+            rows[r] = Array(this.maxColumns).fill(null);
+        }
+
+        return rows;
+    }
+
+
+    cloneGrid(prevRows) {
+        let rows = Array(prevRows.length);
+        for (let r = 0; r < rows.length; r++) {
+            rows[r] = Array(prevRows[r].length).fill(null);
+            for (let c = 0; c < rows[r].length; c++) {
+                rows[r][c] = prevRows[r][c];
+            }
+        }
+
+        return rows;
     }
 
     getNextStartingColumn() {
@@ -31,39 +56,52 @@ class Game extends React.Component {
 
     iterateGame() {
 
+        if (this.state.gameOver) {
+            this.stopGame();
+        }
 
         this.setState((prevState) => {
 
-            let newRows = [];
+            if (prevState.gameOver)
+                return;
 
-            for (let r = this.maxRows - 1; r > 0; r--) {
-                newRows[r] = [];
-                for (let c = 0; c < this.maxColumns; c++) {
-                    if (prevState.rows[r][c]) {
-                        if (r === this.maxRows - 1 || prevState.rows[r + 1][c])
-                            newRows[r][c] = prevState.rows[r][c];
-                        else
-                            newRows[r][c] = null;
-                    } else {
-                        newRows[r][c] = prevState.rows[r - 1][c];
+            let newRows = this.cloneGrid(prevState.rows);
+            let gameOver = false;
+
+            for (let r = newRows.length - 1; r >= 0; r--) {
+                for (let c = 0; c < newRows[r].length; c++) {
+                    if (newRows[r][c] == null) {
+
+                        if (r > 0) {
+                            // move cell above down to current cell
+                            newRows[r][c] = newRows[r - 1][c];
+                            newRows[r - 1][c] = null;
+                        }
+
+                    } else if (r === 0) {
+                        gameOver = true;
                     }
                 }
             }
 
-            newRows[0] = Array(this.maxColumns).fill(null);
-            newRows[0][this.getNextStartingColumn()] = 144;
-
+            if (!gameOver){
+                newRows[0][this.getNextStartingColumn()] = 144;
+            }
 
             return {
                 score: prevState.score + 1,
                 rows: newRows,
+                gameOver: gameOver
             };
         });
     };
 
     startGame() {
         this.setState({
+            rows: this.initialiseGrid(),
+            score: 0,
             started: true,
+            gameOver: false,
         });
         this.timer = setInterval(() => this.iterateGame(), 500);
     }
