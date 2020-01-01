@@ -10,6 +10,7 @@ class Game extends React.Component {
 
     maxRows = 12;
     maxColumns = 6;
+    interval = 500;
 
     constructor(props) {
         super(props);
@@ -84,12 +85,12 @@ class Game extends React.Component {
                 }
             }
 
-            if (!gameOver){
+            if (!gameOver) {
                 newRows[0][this.getNextStartingColumn()] = 144;
             }
 
             return {
-                score: prevState.score + 1,
+                score: prevState.score,
                 rows: newRows,
                 gameOver: gameOver
             };
@@ -103,7 +104,7 @@ class Game extends React.Component {
             started: true,
             gameOver: false,
         });
-        this.timer = setInterval(() => this.iterateGame(), 500);
+        this.timer = setInterval(() => this.iterateGame(), this.interval);
     }
 
     stopGame() {
@@ -127,16 +128,16 @@ class Game extends React.Component {
                 <div className="game-header">
                     <div className="game-header-content">
 
-                        {this.state.started
+                        {this.state.started || this.state.gameOver
                             ? <h1>Score:<Badge variant="secondary">{this.state.score}</Badge></h1>
                             : <ButtonToolbar>
-                                <Button onClick={this.startGame} size="lg" block>
+                                <Button onClick={this.startGame} size="lg">
                                     Begin a new Game
                             </Button>
                             </ButtonToolbar>}
                     </div>
-                    <Board rows={this.state.rows} />
                 </div>
+                <Board rows={this.state.rows} />
             </div>
         )
     }
