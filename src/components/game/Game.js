@@ -1,8 +1,10 @@
 import React from 'react'
-import Board from './board/Board';
 import Button from 'react-bootstrap/Button';
 import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
 import Badge from 'react-bootstrap/Badge';
+
+import Board from './board/Board';
+import ConfirmationModal from '../common/modals/ConfirmationModal';
 
 import './_game.scss';
 
@@ -24,6 +26,7 @@ class Game extends React.Component {
         this.iterateGame = this.iterateGame.bind(this);
         this.startGame = this.startGame.bind(this);
         this.stopGame = this.stopGame.bind(this);
+        this.onGameOverConfirmed = this.onGameOverConfirmed.bind(this);
         this.initialiseGrid = this.initialiseGrid.bind(this);
         this.cloneGrid = this.cloneGrid.bind(this);
         this.getNextStartingColumn = this.getNextStartingColumn.bind(this);
@@ -117,6 +120,13 @@ class Game extends React.Component {
         }
     }
 
+    onGameOverConfirmed(){
+        this.setState({
+            gameOver: false,
+            //rows: this.initialiseGrid(),
+        })
+    }
+
     componentWillUnmount() {
 
         this.stopGame();
@@ -138,6 +148,11 @@ class Game extends React.Component {
                     </div>
                 </div>
                 <Board rows={this.state.rows} />
+                <ConfirmationModal 
+                    show={this.state.gameOver} 
+                    heading={"Game Over!"} 
+                    body={"Game Over!"}
+                    onClose={this.onGameOverConfirmed}/>
             </div>
         )
     }
