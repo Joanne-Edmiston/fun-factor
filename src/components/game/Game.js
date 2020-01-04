@@ -21,6 +21,7 @@ class Game extends React.Component {
             started: false,
             score: 0,
             gameOver: false,
+            iteration: 0
         };
 
         this.iterateGame = this.iterateGame.bind(this);
@@ -30,6 +31,7 @@ class Game extends React.Component {
         this.initialiseGrid = this.initialiseGrid.bind(this);
         this.cloneGrid = this.cloneGrid.bind(this);
         this.getNextStartingColumn = this.getNextStartingColumn.bind(this);
+        this.toggleCellSelection = this.toggleCellSelection.bind(this);
     }
 
     initialiseGrid() {
@@ -89,13 +91,18 @@ class Game extends React.Component {
             }
 
             if (!gameOver) {
-                newRows[0][this.getNextStartingColumn()] = 144;
+                newRows[0][this.getNextStartingColumn()] = {
+                    id: this.iteration,
+                    value: 144,
+                    isSelected: false,
+                };
             }
 
             return {
                 score: prevState.score,
                 rows: newRows,
-                gameOver: gameOver
+                gameOver: gameOver,
+                iteration: prevState.iteration + 1
             };
         });
     };
@@ -106,6 +113,7 @@ class Game extends React.Component {
             score: 0,
             started: true,
             gameOver: false,
+            iteration: 0
         });
         this.timer = setInterval(() => this.iterateGame(), this.interval);
     }
@@ -125,6 +133,27 @@ class Game extends React.Component {
             gameOver: false,
             //rows: this.initialiseGrid(),
         })
+    }
+
+
+    toggleCellSelection(cell){
+
+        this.setState((prevState) => {
+
+            let newRows = this.cloneGrid(prevState.rows);
+
+            let selectedRow = prevState.rows.find(r => r.some(c => c && c.id === cell.id));
+            let selectedCell = selectedRow.find(c => c && c.id === cell.id);
+
+            if (selectedCell){
+                selectedCell.isSelected = !selectedCell.isSelected;
+            }
+
+            return {
+                rows: newRows
+            };
+
+        });
     }
 
     componentWillUnmount() {
@@ -147,7 +176,7 @@ class Game extends React.Component {
                             </ButtonToolbar>}
                     </div>
                 </div>
-                <Board rows={this.state.rows} />
+                <Board rows={this.state.rows} onCellSelected={this.toggleCellSelection} onCellUnselected={this.toggleCellSelection} />
                 <ConfirmationModal 
                     show={this.state.gameOver} 
                     heading={"Game Over!"} 
