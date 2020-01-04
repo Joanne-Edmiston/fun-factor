@@ -18,3 +18,7 @@
 .game-cell.game-cell-empty {
   visibility: hidden;
 }
+
+.game-cell.selected {
+  background-color: red;
+}

@@ -92,7 +92,7 @@ class Game extends React.Component {
 
             if (!gameOver) {
                 newRows[0][this.getNextStartingColumn()] = {
-                    id: this.iteration,
+                    id: this.state.iteration,
                     value: 144,
                     isSelected: false,
                 };
@@ -149,11 +149,33 @@ class Game extends React.Component {
                 selectedCell.isSelected = !selectedCell.isSelected;
             }
 
+            if (this.selectedCells(newRows).length >= 3){
+
+            }
+
             return {
                 rows: newRows
             };
 
         });
+    }
+
+    selectedCells(rows){
+        let selectedCells = [];
+
+        rows.forEach(row => {
+
+            if (row.some(c => c && c.isSelected)){
+
+                let cells = row.filter(c => c && c.isSelected);
+                cells.forEach(cell => {
+                    selectedCells.push(cell);
+                });
+            }
+
+        });
+
+        return selectedCells;
     }
 
     componentWillUnmount() {

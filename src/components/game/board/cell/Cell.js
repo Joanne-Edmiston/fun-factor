@@ -19,7 +19,7 @@ function Cell(props) {
 
     return (
         <button
-            className={"game-cell game-cell-" + (props.value ? "filled" : "empty")}
+            className={"game-cell game-cell-" + (props.value ? "filled" : "empty") + (props.isSelected ? " selected" : "")}
             onClick={onClick}
             disabled={props.disabled} >
             {props.value}
@@ -27,7 +27,7 @@ function Cell(props) {
 }
 
 Cell.propTypes = {
-    value: PropTypes.number.isRequired,
+    value: PropTypes.number,
     isSelected: PropTypes.bool.isRequired,
     onSelected: PropTypes.func.isRequired,
     onUnSelected: PropTypes.func.isRequired,
