@@ -33,6 +33,8 @@ function ConfirmationModal(props) {
       size={size}
       aria-labelledby="common-modal"
       centered
+      backdrop="static" // don't close when backdrop is clicked
+      keyboard={false} // don't close when escape key pressed
     >
       <Modal.Header closeButton>
         <Modal.Title id="common-modal">

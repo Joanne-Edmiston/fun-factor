@@ -17,7 +17,7 @@ class Board extends React.Component {
             <Cell 
                 value={item ? item.value : null}
                 isSelected={item ? item.isSelected : false}
-                disabled={item? item.isSelected : true}
+                disabled={this.props.disabled || !item || (this.props.maxSelected && !item.isSelected) }
                 onSelected={() => this.props.onCellSelected(item)}
                 onUnSelected={() => this.props.onCellUnselected(item)} />
         </Col>;
@@ -57,7 +57,9 @@ class Board extends React.Component {
 Board.propTypes = {
     rows: PropTypes.array.isRequired,
     onCellSelected: PropTypes.func.isRequired,
-    onCellUnselected: PropTypes.func.isRequired
+    onCellUnselected: PropTypes.func.isRequired,
+    disabled: PropTypes.bool,
+    maxSelected: PropTypes.bool,
 };
 
 export default Board;

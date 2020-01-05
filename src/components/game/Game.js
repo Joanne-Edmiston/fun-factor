@@ -12,7 +12,10 @@ class Game extends React.Component {
 
     maxRows = 12;
     maxColumns = 6;
-    interval = 500;
+    interval = 1000;
+    minTable = 2;
+    maxTable = 12;
+    availableValues = [];
 
     constructor(props) {
         super(props);
@@ -21,7 +24,8 @@ class Game extends React.Component {
             started: false,
             score: 0,
             gameOver: false,
-            iteration: 0
+            iteration: 0,
+            maxSelected: false,
         };
 
         this.iterateGame = this.iterateGame.bind(this);
@@ -29,9 +33,19 @@ class Game extends React.Component {
         this.stopGame = this.stopGame.bind(this);
         this.onGameOverConfirmed = this.onGameOverConfirmed.bind(this);
         this.initialiseGrid = this.initialiseGrid.bind(this);
+        this.insertAvailableValue = this.insertAvailableValue.bind(this);
         this.cloneGrid = this.cloneGrid.bind(this);
         this.getNextStartingColumn = this.getNextStartingColumn.bind(this);
+        this.getNextStartingColumn = this.getNextStartingColumn.bind(this);
         this.toggleCellSelection = this.toggleCellSelection.bind(this);
+
+        for (let table = this.minTable; table <= this.maxTable; table++) {
+
+            this.insertAvailableValue(table);
+            for (let i = 1; i <= this.maxTable; i++) {
+                this.insertAvailableValue(table * i);
+            }
+        }
     }
 
     initialiseGrid() {
@@ -41,6 +55,13 @@ class Game extends React.Component {
         }
 
         return rows;
+    }
+
+    insertAvailableValue(value) {
+        if (this.availableValues.some(v => v === value))
+            return;
+
+        this.availableValues.push(value);
     }
 
 
@@ -58,6 +79,10 @@ class Game extends React.Component {
 
     getNextStartingColumn() {
         return Math.floor(Math.random() * Math.floor(this.maxColumns));
+    }
+
+    getNextCellValue() {
+        return this.availableValues[Math.floor(Math.random() * Math.floor(this.availableValues.length))];
     }
 
     iterateGame() {
@@ -93,7 +118,7 @@ class Game extends React.Component {
             if (!gameOver) {
                 newRows[0][this.getNextStartingColumn()] = {
                     id: this.state.iteration,
-                    value: 144,
+                    value: this.getNextCellValue(),
                     isSelected: false,
                 };
             }
@@ -113,7 +138,8 @@ class Game extends React.Component {
             score: 0,
             started: true,
             gameOver: false,
-            iteration: 0
+            iteration: 0,
+            maxSelected: false,
         });
         this.timer = setInterval(() => this.iterateGame(), this.interval);
     }
@@ -128,15 +154,15 @@ class Game extends React.Component {
         }
     }
 
-    onGameOverConfirmed(){
+    onGameOverConfirmed() {
         this.setState({
             gameOver: false,
-            //rows: this.initialiseGrid(),
+            rows: this.initialiseGrid(),
         })
     }
 
 
-    toggleCellSelection(cell){
+    toggleCellSelection(cell) {
 
         this.setState((prevState) => {
 
@@ -145,27 +171,34 @@ class Game extends React.Component {
             let selectedRow = prevState.rows.find(r => r.some(c => c && c.id === cell.id));
             let selectedCell = selectedRow.find(c => c && c.id === cell.id);
 
-            if (selectedCell){
+            if (selectedCell) {
                 selectedCell.isSelected = !selectedCell.isSelected;
             }
 
-            if (this.selectedCells(newRows).length >= 3){
+            
+            let selected = Object.assign([],  this.selectedCells(newRows));
 
+            if (selected.length === 3) {
+                let sorted = selected.sort((a, b) => a.value - b.value);
+                if (sorted[0].value * sorted[1].value === sorted[2].value) {
+                    // clear selected
+                }
             }
 
             return {
-                rows: newRows
+                rows: newRows,
+                maxSelected: (this.selectedCells(newRows).length >= 3)
             };
 
         });
     }
 
-    selectedCells(rows){
+    selectedCells(rows) {
         let selectedCells = [];
 
         rows.forEach(row => {
 
-            if (row.some(c => c && c.isSelected)){
+            if (row.some(c => c && c.isSelected)) {
 
                 let cells = row.filter(c => c && c.isSelected);
                 cells.forEach(cell => {
@@ -198,12 +231,17 @@ class Game extends React.Component {
                             </ButtonToolbar>}
                     </div>
                 </div>
-                <Board rows={this.state.rows} onCellSelected={this.toggleCellSelection} onCellUnselected={this.toggleCellSelection} />
-                <ConfirmationModal 
-                    show={this.state.gameOver} 
-                    heading={"Game Over!"} 
+                <Board
+                    rows={this.state.rows}
+                    onCellSelected={this.toggleCellSelection}
+                    onCellUnselected={this.toggleCellSelection}
+                    disabled={this.state.gameOver}
+                    maxSelected={this.state.maxSelected} />
+                <ConfirmationModal
+                    show={this.state.gameOver}
+                    heading={"Game Over!"}
                     body={"Game Over!"}
-                    onClose={this.onGameOverConfirmed}/>
+                    onClose={this.onGameOverConfirmed} />
             </div>
         )
     }
